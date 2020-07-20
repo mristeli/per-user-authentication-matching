@@ -199,6 +199,7 @@ Login.prototype = (function() {
     }
     
     if (!$("#username").length) {
+        addLoginHintIfProxy();
         return;
     }
     
@@ -480,7 +481,19 @@ Login.prototype = (function() {
             return "";
         }
     }
-    
+
+    function addLoginHintIfProxy() {
+        if(view.getViewServerPage().endsWith("proxy.jsp")) {
+            const cookieUsername = getCookie("per-user-authentication-matching-username");
+            $("<input>", {
+                type: "hidden",
+                id: "login_hint",
+                name: "login_hint",
+                value: cookieUsername
+            }).appendTo('#form');
+        }
+    }
+
     function getErrorMessage(error, locale) {
         if (errorMessages[error]) {
             if (errorMessages[error][locale]) {
@@ -502,3 +515,4 @@ Login.prototype = (function() {
         document.cookie = name + "=" + value + ";Secure;path=" + view.obj.conversation.contextPath;
 	}
 });
+
